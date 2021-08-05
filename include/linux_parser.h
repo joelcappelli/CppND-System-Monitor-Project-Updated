@@ -28,6 +28,7 @@ void split_string(std::string& str,
                   char delim,
                   std::size_t start_index);
 long HZ_to_secs(long jiffies);
+long hsecs_to_HZ(long hsecs);
 
 // System
 float MemoryUtilization();
@@ -60,7 +61,7 @@ const size_t pid_stime_loc = 15-1;
 const size_t pid_cutime_loc = 16-1;
 const size_t pid_cstime_loc = 17-1;
 const size_t pid_starttime_loc = 22-1;
-const int MB_to_kB = 1000;
+const int MB_to_kB = 1024;
 
 // CPU
 enum ProcessStates {

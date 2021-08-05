@@ -24,9 +24,9 @@ class Process {
   std::string user_;
   std::string command_;
   std::string ram_reserved_;
-  long start_time_;
-  long proc_time_secs = 0;
-  long time_since_start_secs = 0;
+  long start_time_jifs = 0;
+  long proc_jifs = 0;
+  long jifs_since_start = 0;
   float recent_cpu_usage_ = 0.0;
 };
 

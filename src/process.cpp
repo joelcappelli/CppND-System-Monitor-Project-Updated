@@ -20,25 +20,27 @@ pid_(pid),
 user_(LinuxParser::User(pid_)),
 command_(LinuxParser::Command(pid_)),
 ram_reserved_(LinuxParser::Ram(pid_)),
-start_time_(LinuxParser::StartTime(pid_))
-{}
+start_time_jifs(LinuxParser::StartTime(pid_))
+{
+   UpdateCpuUtilization(); 
+}
 
 // TODO: Return this process's ID
 int Process::Pid() const { return pid_; }
 
 // TODO: Return this process's CPU utilization
 float Process::UpdateCpuUtilization() { 
-    std::vector<long> cpu_util_jifs = LinuxParser::ProcessUtilization(pid_);
+    std::vector<long> cpu_util_jifs = LinuxParser::ProcessUtilization(Pid());
 
-    long prev_proc_time_secs = proc_time_secs;
-    long prev_time_since_start_secs = time_since_start_secs;
+    long prev_proc_jifs = proc_jifs;
+    long prev_jifs_since_start = jifs_since_start;
 
-    proc_time_secs = LinuxParser::HZ_to_secs(cpu_util_jifs[kuTime_] + cpu_util_jifs[ksTime_] + cpu_util_jifs[kcuTime_] + cpu_util_jifs[kcsTime_]);
+    proc_jifs = cpu_util_jifs[kuTime_] + cpu_util_jifs[ksTime_] + cpu_util_jifs[kcuTime_] + cpu_util_jifs[kcsTime_];
 
-    time_since_start_secs = LinuxParser::UpTime() - start_time_;
+    jifs_since_start = LinuxParser::hsecs_to_HZ(LinuxParser::UpTime()) - start_time_jifs;
     
-    float proc_time_delta = proc_time_secs - prev_proc_time_secs;
-    float time_since_start_delta = time_since_start_secs - prev_time_since_start_secs;
+    float proc_time_delta = proc_jifs - prev_proc_jifs;
+    float time_since_start_delta = jifs_since_start - prev_jifs_since_start;
 
     recent_cpu_usage_ = time_since_start_delta == 0 ? 0: proc_time_delta/time_since_start_delta;
     return recent_cpu_usage_; 
@@ -56,7 +58,7 @@ string Process::Ram() const{ return ram_reserved_; }
 string Process::User() const{ return user_; }
 
 // TODO: Return the age of this process (in seconds)
-long int Process::ProcessTime() const{ return proc_time_secs; }
+long int Process::ProcessTime() const{ return LinuxParser::HZ_to_secs(proc_jifs); }
 
 // TODO: Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& other) const { return GetCpuUsage() < other.GetCpuUsage(); }

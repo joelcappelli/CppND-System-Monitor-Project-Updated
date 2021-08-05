@@ -33,10 +33,12 @@ vector<Process>& System::Processes() {
     vector<int> latest_pids = LinuxParser::Pids();
 
     for(auto it = processes_.begin();it != processes_.end();++it){
-       if(std::find(latest_pids.begin(),latest_pids.end(),it->Pid())== latest_pids.end()){
-             processes_.erase(it);
-         }
-     }
+        if(std::find(latest_pids.begin(),latest_pids.end(),it->Pid())== latest_pids.end()){
+            processes_.erase(it);
+        }
+        //while in loop, may as well update cpu utilisation before sort
+        it->UpdateCpuUtilization();
+    }
 
     for(auto id:latest_pids){
         auto p_found = std::find_if(processes_.begin(),processes_.end(),
@@ -47,9 +49,7 @@ vector<Process>& System::Processes() {
         if(p_found == processes_.end()){
             Process proc = Process(id);
             if(!proc.Command().empty()){
-                if(proc.Command().compare(0,4,"htop")==0){
-                    processes_.push_back(Process(id));
-                }
+                processes_.push_back(Process(id));
             }
         }
     }
@@ -69,11 +69,10 @@ float System::MemoryUtilization() { return LinuxParser::MemoryUtilization(); }
 std::string System::OperatingSystem() { return os_; }
 
 // TODO: Return the number of processes actively running on the system
-int System::RunningProcesses() { return LinuxParser::RunningProcesses(); 
-}
+int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
 
 // TODO: Return the total number of processes on the system
 int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 
 // TODO: Return the number of seconds since the system started running
-long int System::UpTime() { return LinuxParser::UpTime(); }
+long int System::UpTime() { return LinuxParser::UpTime()/100; }
