@@ -2,7 +2,7 @@
 
 My implementation of htop (based on the starter code for the System Monitor Project in the Object Oriented Programming Course of the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213))
 
-![System Monitor](images/Joel's system monitor screenshot.png)
+![System Monitor](images/joels_system_monitor_screenshot.png)
 
 ## Dependencies
 You need to install ncurses within your own Linux environment: `sudo apt install libncurses5-dev libncursesw5-dev`
