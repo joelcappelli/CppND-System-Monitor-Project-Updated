@@ -58,7 +58,7 @@ string Process::Ram() const{ return ram_reserved_; }
 string Process::User() const{ return user_; }
 
 // TODO: Return the age of this process (in seconds)
-long int Process::ProcessTime() const{ return LinuxParser::HZ_to_secs(proc_jifs); }
+long int Process::ProcessTime() const{ return LinuxParser::HZ_to_secs(jifs_since_start); }
 
 // TODO: Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& other) const { return GetCpuUsage() < other.GetCpuUsage(); }
